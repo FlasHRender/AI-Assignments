@@ -4,6 +4,7 @@ import random as rd
 import math
 import matplotlib.pyplot as plt
 import sys
+import time
 
 class Node:
     def __init__(self, nodeData):
@@ -30,7 +31,7 @@ class DecisionTree:
     def Config(self, skips = 0.3):
         # Hyperparameters
         self.skips = skips
-        self.maxDepth = self.rootData.shape[1]
+        self.maxDepth = np.Inf
 
     def Train(self):
         self._buildTree(self.rootNode, 0)
@@ -117,33 +118,31 @@ class DecisionTree:
         unq, cnt = np.unique(colArray, return_counts=True)
         return sum(-1*cnt/sum(cnt)*np.log2(cnt/sum(cnt)))
 
-    def Test(self, value):
+    def Test(self, testArr):
+        if len(testArr.shape) != 2:
+            raise ValueError("Takes 2D np.array types with with each row as test data")
         # Value is a np array containing the attributes and the values. 
         # Iterate over the number of test cases, for each getting the class it belongs to
-        retArr = np.zeros(value.shape[0])
-        for i in range(value.shape[0]):
-            retArr[i] = self._getClass(value[i])
+        retArr = np.zeros(testArr.shape[0])
+        for i in range(testArr.shape[0]):
+            retArr[i] = self._getClass(testArr[i])
         return retArr
 
     def _getClass(self, testSample):
         return self._searchTree(self.rootNode, testSample)
 
     def _searchTree(self, node, arr):
-        if node.cls is not None:
+        if node.splitVal is not None:
             v = node.splitAttr
             if ( arr[v] <= node.splitVal ):
-                return self._searchTree(node.left,  np.concatenate(( arr[v: ], arr[:v+1])) )
+                return self._searchTree(node.left,  np.concatenate(( arr[:v], arr[v+1: ])) )
             else:
-                return self._searchTree(node.right, np.concatenate(( arr[v: ], arr[:v+1])) )
+                return self._searchTree(node.right, np.concatenate(( arr[:v], arr[v+1: ])) )
         else:
             return node.cls
 
     def _readCSV(self, datasetPath):  
         return np.genfromtxt(datasetPath, dtype=float, delimiter=",")
-
-    # def _getClasses(self, data):
-    #     # gets the number of unique classes
-    #     return np.unique(data[:,-1]).shape[0]
 
 
 if __name__ == "__main__":
