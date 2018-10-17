@@ -89,7 +89,7 @@ class DecisionTree:
             return
 
     def _setClass(self, node):
-        u, c = np.unique(node.dataset[:, -1], return_counts=True)
+        _, c = np.unique(node.dataset[:, -1], return_counts=True)
         return node.dataset[:, -1][np.argmax(c)]
 
     def _getBestSplit(self, node):
@@ -153,7 +153,7 @@ class DecisionTree:
     def _getEntropy(self, colArray):
         # Given a column vector, gets the scalar entropy
         # by summming over the p/sum(classes) * log2 of the same fraction
-        unq, cnt = np.unique(colArray, return_counts=True)
+        _, cnt = np.unique(colArray, return_counts=True)
         return sum(-1*cnt/sum(cnt)*np.log2(cnt/sum(cnt)))
 
     def Test(self, testArr):
