@@ -29,12 +29,12 @@ class DecisionTree:
         self.maxDepth = None
 
         if self.rootData.shape[0] < 1000:
-            self.Config(skipRatio=1)
+            self.Config(binPercent=100)
         elif self.rootData.shape[0] < 10000:
-            self.Config(skipRatio=0.5, maxDepth=int(self.rootData.shape[1]*0.7))
+            self.Config(binPercent=50, maxDepth=int(self.rootData.shape[1]*0.7))
         else:
             self.Config(
-                skipRatio=0.01, 
+                binPercent=1, 
                 maxDepth=int(self.rootData.shape[1]*0.5) 
             )
         
@@ -44,16 +44,16 @@ class DecisionTree:
         self.DReadT = 0
         self.TrainTime = 0
 
-    def Config(self, skipRatio=1, maxDepth=np.Inf):
+    def Config(self, binPercent=100, maxDepth=np.Inf):
         # Hyperparameters
-        if skipRatio ==1 :
+        if binPercent == 100 :
             raise ValueError("Skip Ratio /must be a value in the range (0, 1]  ")
-        elif skipRatio > 0.5:
-            print("Warning! Setting skip ratio above 0.5 is the same as setting it to 1!")
+        elif binPercent > 50:
+            print("Warning! Setting bin% above 0.5 is the same as setting it to 100%!")
             time.sleep(5)
             print("Continuing...")
         
-        self.skips = int(1/skipRatio)          # Given a percentage, calculate actual skips 
+        self.skips = int(100/binPercent)          # Given a percentage, calculate actual skips 
         self.maxDepth = maxDepth
 
     def Train(self):

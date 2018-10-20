@@ -6,7 +6,7 @@ from multiprocessing import Pool
 def func(skp):
     Des = DecisionTree("datasets\\Sensorless_drive_diagnosis.csv")
     # Des = DecisionTree("datasets\\sensor_truncated.csv")
-    Des.Config(skipRatio=skp[0], maxDepth=skp[1])
+    Des.Config(binPercent=skp[0], maxDepth=skp[1])
 
     # Training times
     trSt = time.time()
@@ -48,4 +48,4 @@ def func(skp):
           "  Test Time:"    + str.format("{0:6.3f}" ,  tstTime))
 
 if __name__ == "__main__":
-    func([0.035, 30])
+    func([3.5, 30])
